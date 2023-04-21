@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/ajujacob88/go-web-app-with-admin-panel-and-jwt-auth/controllers"
 	"github.com/ajujacob88/go-web-app-with-admin-panel-and-jwt-auth/initializers"
 	"github.com/gin-gonic/gin"
 )
@@ -13,10 +14,6 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	r.POST("/signup", controllers.Signup)
 	r.Run()
 }
