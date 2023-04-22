@@ -31,8 +31,10 @@ func UserSignup(c *gin.Context) {
 
 //===================POST SIGNUP=====================
 
-func Signup(c *gin.Context) {
-	usernameFromForm := c.Request.FormValue("email")
+func UserPostSignup(c *gin.Context) {
+	fmt.Println("debug check")
+	fullnameFromForm := c.Request.FormValue("fullname")
+	emailFromForm := c.Request.FormValue("email")
 	passwordFromForm := c.Request.FormValue("password")
 
 	// get the email/password of req body, first create a body to store the data that is coming in
@@ -42,8 +44,11 @@ func Signup(c *gin.Context) {
 		Name     string
 	}
 
-	body.Email = usernameFromForm
+	body.Name = fullnameFromForm
+	body.Email = emailFromForm
 	body.Password = passwordFromForm
+
+	fmt.Println("debug check body name is ", body.Name)
 	//populate the variable with the data that came in
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -94,7 +99,7 @@ func UserLogin(c *gin.Context) {
 
 //===================POST LOIGN=====================
 
-func Login(c *gin.Context) {
+func UserPostLogin(c *gin.Context) {
 
 	c.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 

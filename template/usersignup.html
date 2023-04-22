@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-  	<title>Signup 08</title>
+  	<title>Signup User</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -27,19 +27,21 @@
 		      		<span class="fa fa-user-plus"></span>
 		      	</div>
 		      	<h3 class="text-center mb-4">Create an Account</h3>
-						<form action="#" class="signup-form">
+						<form action="/UserPostSignup" method="post" class="signup-form">
 		      		<div class="form-group">
-		      			<input type="text" class="form-control rounded-left" placeholder="Full Name" required>
+		      			<input type="text" class="form-control rounded-left" placeholder="Full Name" name="fullname" required>
 		      		</div>
 	            <div class="form-group">
-	              <input type="email" class="form-control rounded-left" placeholder="Email" required>
+	              <input type="email" class="form-control rounded-left" placeholder="Email" name="email" required>
 	            </div>
 	            <div class="form-group">
-	              <input type="password" class="form-control rounded-left" placeholder="Password" required>
+	              <input type="password" class="form-control rounded-left" placeholder="Password" name="password" required>
 	            </div>
+				<!--
 	            <div class="form-group">
 	              <input type="password" class="form-control rounded-left" placeholder="Confirm Password" required>
 	            </div>
+			-->
 	            <div class="form-group">
 					<div class="signup-wrap p-4 p-md-5"></div>
 	            	<button type="submit" class="btn btn-primary rounded submit p-3 px-5">Sign Up</button>
