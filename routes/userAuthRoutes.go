@@ -8,6 +8,9 @@ import (
 
 func UserAuthRoutes(r *gin.Engine) {
 	r.LoadHTMLGlob("template/*.html")
+
+	r.Static("/template", "./template")
+
 	r.GET("/userSignup", controllers.UserSignup)
 	r.POST("/Signup", controllers.Signup)
 	r.GET("/userLogin", controllers.UserLogin)
