@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/ajujacob88/go-web-app-with-admin-panel-and-jwt-auth/controllers"
 	"github.com/ajujacob88/go-web-app-with-admin-panel-and-jwt-auth/initializers"
-	"github.com/ajujacob88/go-web-app-with-admin-panel-and-jwt-auth/middleware"
+	"github.com/ajujacob88/go-web-app-with-admin-panel-and-jwt-auth/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +14,14 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	r.POST("/signup", controllers.Signup)
-	r.POST("/login", controllers.Login)
-	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
+
+	r.Use(gin.Logger())
+
+	routes.UserAuthRoutes(r)
+
+	// r.POST("/signup", controllers.Signup)
+	// r.POST("/login", controllers.Login)
+	// r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 
 	r.Run()
 }
