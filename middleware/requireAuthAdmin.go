@@ -63,6 +63,7 @@ func RequireAuthAdmin(c *gin.Context) {
 		c.Next()
 
 	} else {
+
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}

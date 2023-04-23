@@ -20,16 +20,16 @@ import (
 func AdminLogin(c *gin.Context) {
 	c.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 
-	ok := adminLoggedStatus
+	//ok := adminLoggedStatus
 
-	if ok {
-		c.Redirect(303, "/adminProfile")
-		return
-	}
+	// if ok {
+	// 	c.Redirect(303, "/adminProfile")
+	// 	return
+	// }
 	c.HTML(http.StatusOK, "adminlogin.html", nil)
 }
 
-//===================POST LOIGN=====================
+//===================POST LOGIN=====================
 
 type User struct {
 	ID       int
@@ -65,32 +65,44 @@ func AdminPostLogin(c *gin.Context) {
 		return
 	}
 
-	//Check if the password is correct , no need to bcrypt since admin password is not hashed
+	//Check if the password is correct , no need to bcrypt since admin password is not hashed/encrypted in db, so just compare with if
 
-	//generate a jwt token
-	// Create a new token object, specifying signing method and the claims you would like it to contain.
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": admin.ID,
-		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
-	})
-
-	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
-	if err != nil {
+	if admin.Password != form.Password {
+		// Passwords do not match
+		userLoggedStatus = false
+		c.Redirect(303, "/userLogin")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to create the token",
+			"error": "invalid email id or password",
 		})
 		return
+	} else {
+		// Passwords match
+
+		//generate a jwt token
+		// Create a new token object, specifying signing method and the claims you would like it to contain.
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"sub": admin.ID,
+			"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+		})
+
+		// Sign and get the complete encoded token as a string using the secret
+		tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Failed to create the token",
+			})
+			return
+		}
+
+		//respond
+		c.SetSameSite(http.SameSiteLaxMode)
+		c.SetCookie("admintoken", tokenString, 3600, "", "", false, true)
+		c.Redirect(303, "/adminProfile")
+		adminLoggedStatus = true
+		fmt.Println("admin logged in")
+
+		c.HTML(http.StatusOK, "adminprofile.html", nil)
 	}
-
-	//respond
-	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("admintoken", tokenString, 3600, "", "", false, true)
-	c.Redirect(303, "/adminProfile")
-	adminLoggedStatus = true
-	fmt.Println("admin logged in")
-
-	c.HTML(http.StatusOK, "adminprofile.html", nil)
 
 }
 
