@@ -31,7 +31,7 @@ func RequireAuth(c *gin.Context) {
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return []byte(os.Getenv("SECRET")), nil
+		return []byte(os.Getenv("SECRET_KEY")), nil
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -39,6 +39,7 @@ func RequireAuth(c *gin.Context) {
 		//check the expiration
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			fmt.Println("Token tampered")
 		}
 
 		//find the user with token sub
@@ -55,9 +56,11 @@ func RequireAuth(c *gin.Context) {
 
 		//continue
 		c.Next()
+		fmt.Println("middlewarec.next:", claims["foo"], claims["nbf"])
 
 	} else {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.HTML(http.StatusOK, "userlogin.html", gin.H{})
+		//c.AbortWithStatus(http.StatusUnauthorized)
 	}
 
 }

@@ -174,7 +174,7 @@ func UserPostLogin(c *gin.Context) {
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
 	userLoggedStatus = true
-	c.HTML(http.StatusOK, "userprofile.html", nil)
+	c.HTML(http.StatusOK, "userprofile.html", user.Name)
 }
 
 //===================LOGOUT=====================
