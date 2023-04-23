@@ -10,7 +10,7 @@ func AdminAuthRoutes(r *gin.Engine) {
 
 	r.LoadHTMLGlob("template/*.html")
 
-	r.Static("/template", "./template") //to load the bootstrap css files,, mention the folder/template or /assets where static css and other files are located
+	//r.Static("/template", "./template") //to load the bootstrap css files,, mention the folder/template or /assets where static css and other files are located
 
 	r.GET("/adminLogin", controllers.AdminLogin)
 	r.POST("/adminPostLogin", controllers.AdminPostLogin)
