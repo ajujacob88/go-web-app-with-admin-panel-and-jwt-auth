@@ -91,13 +91,13 @@ func UserLogin(c *gin.Context) {
 
 	ok := userLoggedStatus
 	if ok {
-		c.Redirect(303, "/main")
+		c.Redirect(303, "/userProfile")
 		return
 	}
 	c.HTML(http.StatusOK, "userlogin.html", nil)
 }
 
-//===================POST LOIGN=====================
+//===================POST LOGIN=====================
 
 func UserPostLogin(c *gin.Context) {
 
@@ -105,7 +105,7 @@ func UserPostLogin(c *gin.Context) {
 
 	//GEt name and password from request body
 
-	usernameFromForm := c.Request.FormValue("username")
+	emailFromForm := c.Request.FormValue("email")
 	passwordFromForm := c.Request.FormValue("password")
 
 	// Get the email and password of req body
@@ -113,7 +113,7 @@ func UserPostLogin(c *gin.Context) {
 		Email    string
 		Password string
 	}
-	body.Email = usernameFromForm
+	body.Email = emailFromForm
 	body.Password = passwordFromForm
 
 	if c.Bind(&body) != nil {
@@ -124,6 +124,7 @@ func UserPostLogin(c *gin.Context) {
 	}
 
 	//look up requested user
+	//Check if the user exists in the database
 	var user models.User
 	initializers.DB.First(&user, "email = ?", body.Email) //db.First(&user, "id = ?", "1b74413f-f3b8-409f-ac47-e8c062e3472a"),, SELECT * FROM users WHERE id = "1b74413f-f3b8-409f-ac47-e8c062e3472a";
 
@@ -137,6 +138,7 @@ func UserPostLogin(c *gin.Context) {
 	}
 
 	//compare sent in pass with saved user pass hash
+	//Check if the password is correct
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
 
 	if err != nil {
@@ -148,13 +150,14 @@ func UserPostLogin(c *gin.Context) {
 		return
 	}
 	//generate a jwt token
+	// Create a new token object, specifying signing method and the claims you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to create the token",
@@ -167,6 +170,7 @@ func UserPostLogin(c *gin.Context) {
 	// 	"token": tokenString,
 	// })
 
+	//respond
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
 	userLoggedStatus = true
@@ -202,7 +206,7 @@ func UserProfile(c *gin.Context) {
 
 	ok := userLoggedStatus
 	if ok {
-		c.HTML(http.StatusOK, "home.html", nil)
+		c.HTML(http.StatusOK, "userprofile.html", nil)
 		return
 	}
 	c.Redirect(303, "/userLogin")
