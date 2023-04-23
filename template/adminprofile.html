@@ -64,6 +64,11 @@
     </style>
 </head>
 <body>
+
+    <form class="d-flex">
+        <button class="btn btn-primary" type="submit"><a href="/logoutadmin"    
+           style="text-decoration: none;color:white;"> Logout</a></button>
+      </form>
     <h1>Admin Panel</h1>
     <h2>Current Users</h2>
     <table>
@@ -72,7 +77,8 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Actions</th>
+                <th>Delete</th>
+                <th>Edit/Update</th>
             </tr>
         </thead>
         <tbody>
@@ -83,9 +89,11 @@
                 <td>{{$user.Email}}</td>
                 <td>
                     <a href="/deleteUser/{{$user.ID}}" class="button button-delete">Delete</a>
+                </td>
+                <td>
                     <form action="/updateUser/{{$user.ID}}" method="post">
                         <input type="text" name="updatedName" placeholder="New name">
-                        <button type="submit" class="button button-edit">Edit</button>
+                        <button type="submit" class="button button-edit">Update</button>
                     </form>
                 </td>
             </tr>
@@ -93,12 +101,15 @@
         </tbody>
     </table>
     <h2>Create New User</h2>
-    <form>
+    <form action="/createUser" method="post">
         <label for="name">Name</label>
-        <input type="text" id="name" name="name" placeholder="Enter name">
+        <input type="text" id="name" name="fullname" placeholder="Enter name" required>
 
         <label for="email">Email</label>
-        <input type="text" id="email" name="email" placeholder="Enter Email">
+        <input type="text" id="email" name="email" placeholder="Enter Email" required>
+
+        <label for="password">Password</label>
+        <input type="text" id="password" name="password" placeholder="Enter Password" required>
         <button type="submit">Create User</button>
     </form>
 </body>

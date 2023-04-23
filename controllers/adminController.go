@@ -142,7 +142,7 @@ func AdminProfile(c *gin.Context) {
 		c.HTML(http.StatusOK, "adminprofile.html", gin.H{
 			"users": users,
 		})
-		fmt.Println("fetching users")
+		fmt.Println("fetching userss")
 		return
 
 		// var user []models.User
@@ -218,11 +218,11 @@ func CreateUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 
 	var user models.User
-	name := c.Param("name")
-	email := c.Param("email")
+	name := c.Param("id")
+	//email := c.Param("email")
 
-	initializers.DB.Where("name=?", name).Delete(&user)
-	initializers.DB.Where("email=?", email).Delete(&user)
+	initializers.DB.Where("id=?", name).Delete(&user)
+	//initializers.DB.Where("email=?", email).Delete(&user)
 	c.Redirect(303, "/adminProfile")
 	fmt.Println("user deleted")
 
