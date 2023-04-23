@@ -20,12 +20,12 @@ import (
 func AdminLogin(c *gin.Context) {
 	c.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 
-	//ok := adminLoggedStatus
+	ok := adminLoggedStatus
 
-	// if ok {
-	// 	c.Redirect(303, "/adminProfile")
-	// 	return
-	// }
+	if ok {
+		c.Redirect(303, "/adminProfile")
+		return
+	}
 	c.HTML(http.StatusOK, "adminlogin.html", nil)
 }
 
@@ -70,7 +70,7 @@ func AdminPostLogin(c *gin.Context) {
 	if admin.Password != form.Password {
 		// Passwords do not match
 		userLoggedStatus = false
-		c.Redirect(303, "/userLogin")
+		c.Redirect(303, "/adminLogin")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid email id or password",
 		})
@@ -101,7 +101,8 @@ func AdminPostLogin(c *gin.Context) {
 		adminLoggedStatus = true
 		fmt.Println("admin logged in")
 
-		c.HTML(http.StatusOK, "adminprofile.html", nil)
+		//c.HTML(http.StatusOK, "adminprofile.html", nil)
+
 	}
 
 }
@@ -133,23 +134,34 @@ func AdminProfile(c *gin.Context) {
 	fmt.Println("admin logged status is ", ok)
 
 	if ok {
-		var user []models.User
 
-		var id [60]uint
-		var name [60]string
-		var email [60]string
+		var users []models.User
+		//initializers.DB.Find(&users)
+		initializers.DB.Select("id, name, email").Find(&users)
 
-		initializers.DB.Raw("SELECT id,name,email FROM users").Scan(&user)
-		for index, val := range user {
-			id[index], name[index], email[index] = val.ID, val.Name, val.Email
-		}
 		c.HTML(http.StatusOK, "adminprofile.html", gin.H{
-			"id":    id,
-			"name":  name,
-			"email": email,
+			"users": users,
 		})
 		fmt.Println("fetching users")
 		return
+
+		// var user []models.User
+
+		// var id [60]uint
+		// var name [60]string
+		// var email [60]string
+
+		// initializers.DB.Raw("SELECT id,name,email FROM users").Scan(&user)
+		// for index, val := range user {
+		// 	id[index], name[index], email[index] = val.ID, val.Name, val.Email
+		// }
+		// c.HTML(http.StatusOK, "adminprofile.html", gin.H{
+		// 	"id":    id,
+		// 	"name":  name,
+		// 	"email": email,
+		// })
+		// fmt.Println("fetching users")
+		// return
 	}
 	c.Redirect(303, "/adminLogin")
 }
