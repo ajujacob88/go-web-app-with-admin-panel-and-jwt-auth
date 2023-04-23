@@ -91,7 +91,7 @@
                     <a href="/deleteUser/{{$user.ID}}" class="button button-delete">Delete</a>
                 </td>
                 <td>
-                    <form action="/updateUser/{{$user.ID}}" method="post">
+                    <form action="/updateUser/{{$user.Name}}" method="post">
                         <input type="text" name="updatedName" placeholder="New name">
                         <button type="submit" class="button button-edit">Update</button>
                     </form>
