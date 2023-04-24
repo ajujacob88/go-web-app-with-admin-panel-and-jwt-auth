@@ -132,7 +132,7 @@ func UserPostLogin(c *gin.Context) {
 		userLoggedStatus = false
 		c.Redirect(303, "/userLogin")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid email id or password",
+			"error": "invalid email id or passwordd",
 		})
 		return
 	}
