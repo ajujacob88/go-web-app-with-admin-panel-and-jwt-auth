@@ -40,8 +40,18 @@ func RequireAuth(c *gin.Context) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 
 		// Check the expiration and not before time
-		expTime := int64(claims["exp"].(float64))
-		nbfTime := int64(claims["nbf"].(float64))
+		// expTime := int64(claims["exp"].(float64))
+		// nbfTime := int64(claims["nbf"].(float64))
+		// it allow you to extract the correct expiration and not-before times from the token claims.
+		expTime := int64(0)
+		if exp, ok := claims["exp"].(float64); ok {
+			expTime = int64(exp)
+		}
+		nbfTime := int64(0)
+		if nbf, ok := claims["nbf"].(float64); ok {
+			nbfTime = int64(nbf)
+		}
+
 		if time.Now().Unix() > expTime || time.Now().Unix() < nbfTime {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return

@@ -99,6 +99,8 @@ func UserLogin(c *gin.Context) {
 
 //===================POST LOGIN=====================
 
+var loggedInPersonName string //this is for printing the username in html file which is used in userprofilefunction, so declared here to acces from userprofile function
+
 func UserPostLogin(c *gin.Context) {
 
 	c.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
@@ -127,6 +129,8 @@ func UserPostLogin(c *gin.Context) {
 	//Check if the user exists in the database
 	var user models.User
 	initializers.DB.First(&user, "email = ?", body.Email) //db.First(&user, "id = ?", "1b74413f-f3b8-409f-ac47-e8c062e3472a"),, SELECT * FROM users WHERE id = "1b74413f-f3b8-409f-ac47-e8c062e3472a";
+
+	loggedInPersonName = user.Name //used in userprofile function to print the username in html while logged in
 
 	if user.ID == 0 {
 		userLoggedStatus = false
@@ -175,8 +179,9 @@ func UserPostLogin(c *gin.Context) {
 	//respond
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
+	c.Redirect(303, "/userProfile")
 	userLoggedStatus = true
-	c.HTML(http.StatusOK, "userprofile.html", user.Name)
+	//c.HTML(http.StatusOK, "userprofile.html", user.Name)
 	//c.Redirect(303, "/userProfile")
 }
 
@@ -209,7 +214,8 @@ func UserProfile(c *gin.Context) {
 
 	ok := userLoggedStatus
 	if ok {
-		c.HTML(http.StatusOK, "userprofile.html", nil)
+		//c.HTML(http.StatusOK, "userprofile.html", user.Name)  //user.Name can't be called here, because its declared in another function
+		c.HTML(http.StatusOK, "userprofile.html", loggedInPersonName)
 		return
 	}
 	c.Redirect(303, "/userLogin")
