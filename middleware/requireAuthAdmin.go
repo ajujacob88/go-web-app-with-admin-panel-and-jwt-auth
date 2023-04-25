@@ -23,6 +23,7 @@ func RequireAuthAdmin(c *gin.Context) {
 	// Decode / validate it
 
 	// Parse takes the token string and a function for looking up the key. The latter is especially
+	//This block of code parses and validates the token extracted from the cookie.
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -54,6 +55,8 @@ func RequireAuthAdmin(c *gin.Context) {
 		}
 
 		// Find the user with token sub
+		// This block of code retrieves the sub claim from the token, which is the ID of the admin user who generated the token, and uses it to retrieve the corresponding admin object from the database. If no admin object is found with the given ID, the function returns an error response with HTTP status
+
 		var admin models.Admin
 		initializers.DB.First(&admin, claims["sub"])
 

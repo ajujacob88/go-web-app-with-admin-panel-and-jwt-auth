@@ -139,7 +139,7 @@ func UserPostLogin(c *gin.Context) {
 
 	//compare sent in pass with saved user pass hash
 	//Check if the password is correct
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password)) //CompareHashAndPassword compares a bcrypt hashed password with its possible plaintext equivalent. Returns nil on success, or an error on failure.
 
 	if err != nil {
 		userLoggedStatus = false
@@ -151,12 +151,14 @@ func UserPostLogin(c *gin.Context) {
 	}
 	//generate a jwt token
 	// Create a new token object, specifying signing method and the claims you would like it to contain.
+	//This creates a new JWT (JSON Web Token) with the specified claims.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
+	//This signs the token using the specified secret key and returns a string representation of the complete, signed token.
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -175,6 +177,7 @@ func UserPostLogin(c *gin.Context) {
 	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
 	userLoggedStatus = true
 	c.HTML(http.StatusOK, "userprofile.html", user.Name)
+	//c.Redirect(303, "/userProfile")
 }
 
 //===================LOGOUT=====================
@@ -201,7 +204,7 @@ func UserLogged(c *gin.Context) {
 //===================USER PROFILE=====================
 
 func UserProfile(c *gin.Context) {
-
+	// fmt.Println("in user profile")
 	c.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 
 	ok := userLoggedStatus
