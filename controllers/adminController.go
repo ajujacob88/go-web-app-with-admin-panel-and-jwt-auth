@@ -221,7 +221,8 @@ func DeleteUser(c *gin.Context) {
 	name := c.Param("id")
 	//email := c.Param("email")
 
-	initializers.DB.Where("id=?", name).Delete(&user)
+	initializers.DB.Where("id=?", name).Delete(&user) ////soft delete : updates current time in deletedAt coloumn in users table
+
 	//initializers.DB.Where("email=?", email).Delete(&user)
 	c.Redirect(303, "/adminProfile")
 	fmt.Println("user deleted")

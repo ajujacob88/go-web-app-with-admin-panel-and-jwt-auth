@@ -31,3 +31,5 @@ func main() {
 // https://www.youtube.com/watch?v=ma7rUS_vW9M&t=1342s
 // https://www.youtube.com/watch?v=7Q17ubqLfaM
 // https://www.youtube.com/watch?v=hWmR8YtlFlE
+//https://jwt.io/
+////https://www.youtube.com/watch?v=bj77B59nkTQ
